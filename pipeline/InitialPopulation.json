@@ -52,7 +52,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "AzureSQLDB",
 						"type": "DatasetReference"
 					}
 				]
@@ -113,7 +113,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "AzureSQLDB",
 						"type": "DatasetReference"
 					}
 				]
@@ -174,7 +174,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "AzureSQLDB",
 						"type": "DatasetReference"
 					}
 				]

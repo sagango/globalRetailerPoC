@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable1",
+	"name": "AzureSQLDB",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "globalRetailerDB",
