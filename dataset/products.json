@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText1",
+	"name": "products",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "fileStorage",

@@ -46,7 +46,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DelimitedText1",
+						"referenceName": "products",
 						"type": "DatasetReference"
 					}
 				],
