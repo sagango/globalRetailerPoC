@@ -1,5 +1,5 @@
 {
-	"name": "productAttributes",
+	"name": "csvProductAttributes",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "fileStorage",

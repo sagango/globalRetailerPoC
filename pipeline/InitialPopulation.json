@@ -46,7 +46,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "products",
+						"referenceName": "csvProducts",
 						"type": "DatasetReference"
 					}
 				],
@@ -107,13 +107,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "productAttributes",
+						"referenceName": "csvProductAttributes",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "dbCustomers",
+						"referenceName": "dbProducts",
 						"type": "DatasetReference"
 					}
 				]
@@ -168,13 +168,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "custoomers",
+						"referenceName": "csvCustomers",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "dbCustomers",
+						"referenceName": "dbProductAttributes",
 						"type": "DatasetReference"
 					}
 				]
@@ -229,13 +229,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "stores",
+						"referenceName": "csvStores",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "dbCustomers",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					}
 				]

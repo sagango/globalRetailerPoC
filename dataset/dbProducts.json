@@ -1,0 +1,16 @@
+{
+	"name": "dbProducts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "globalRetailerDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "products"
+		}
+	}
+}
