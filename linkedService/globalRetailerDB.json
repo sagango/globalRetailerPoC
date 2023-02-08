@@ -1,10 +1,12 @@
 {
 	"name": "globalRetailerDB",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sagaweb.database.windows.net;Initial Catalog=globalRetailerDB"
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=sagaweb.database.windows.net;initial catalog=globalRetailerDB;user id=dbWriter@sagaweb.org",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDRDODVERUFELUU1QzAtNDhGNC05RTQ0LTJGMEEzQkFEMzE1Nl9hOGY2NTEwNS03MGU4LTQ4MGQtYjMzNS0xMGFjYThiM2VmM2IiDQp9"
 		}
 	}
 }
