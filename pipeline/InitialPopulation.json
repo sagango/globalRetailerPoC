@@ -52,7 +52,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSQLDB",
+						"referenceName": "dbCustomers",
 						"type": "DatasetReference"
 					}
 				]
@@ -113,7 +113,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSQLDB",
+						"referenceName": "dbCustomers",
 						"type": "DatasetReference"
 					}
 				]
@@ -174,7 +174,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSQLDB",
+						"referenceName": "dbCustomers",
 						"type": "DatasetReference"
 					}
 				]
@@ -235,7 +235,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSQLDB",
+						"referenceName": "dbCustomers",
 						"type": "DatasetReference"
 					}
 				]

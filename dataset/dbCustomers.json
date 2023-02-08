@@ -1,5 +1,5 @@
 {
-	"name": "AzureSQLDB",
+	"name": "dbCustomers",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "globalRetailerDB",
@@ -7,6 +7,10 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "customer"
+		}
 	}
 }
