@@ -212,7 +212,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "RestResource1",
+						"referenceName": "MockStore",
 						"type": "DatasetReference"
 					}
 				],

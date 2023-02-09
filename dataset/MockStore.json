@@ -1,5 +1,5 @@
 {
-	"name": "RestResource1",
+	"name": "MockStore",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "MockarooStore",
