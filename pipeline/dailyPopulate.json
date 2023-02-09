@@ -333,7 +333,7 @@
 								"sink": {
 									"name": "price",
 									"type": "Decimal",
-									"physicalType": "decimal",
+									"physicalType": "money",
 									"scale": 4,
 									"precision": 19
 								}
