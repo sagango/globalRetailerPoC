@@ -11,13 +11,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MockarooCustomer'"
 		},
-		"fileStorage_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'fileStorage'"
-		},
 		"MockarooStore_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MockarooStore'"
+		},
+		"fileStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'fileStorage'"
 		},
 		"globalRetailerDB_connectionString": {
 			"type": "secureString",
@@ -61,6 +61,27 @@
 					"password": {
 						"type": "SecureString",
 						"value": "[parameters('MockarooCustomer_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MockarooStore')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Generate fictional stores via API using AI, restricted to some countries",
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('MockarooStore_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('MockarooStore_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MockarooStore_password')]"
 					}
 				}
 			},
@@ -122,27 +143,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MockarooStore')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Generate fictional stores via API using AI, restricted to some countries",
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('MockarooStore_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Basic",
-					"userName": "[parameters('MockarooStore_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('MockarooStore_password')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/MockCustomer')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -158,6 +158,24 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/MockarooCustomer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MockStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MockarooStore",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MockarooStore')]"
 			]
 		},
 		{
@@ -368,24 +386,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/globalRetailerIR')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/RestResource1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "MockarooStore",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "RestResource",
-				"typeProperties": {},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MockarooStore')]"
 			]
 		},
 		{
@@ -960,7 +960,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "RestResource1",
+								"referenceName": "MockStore",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -983,7 +983,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/MockCustomer')]",
 				"[concat(variables('factoryId'), '/datasets/dbCustomers')]",
-				"[concat(variables('factoryId'), '/datasets/RestResource1')]",
+				"[concat(variables('factoryId'), '/datasets/MockStore')]",
 				"[concat(variables('factoryId'), '/datasets/dbStores')]"
 			]
 		},

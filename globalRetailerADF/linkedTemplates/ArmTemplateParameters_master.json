@@ -8,14 +8,14 @@
 		"MockarooCustomer_password": {
 			"value": ""
 		},
+		"MockarooStore_password": {
+			"value": ""
+		},
 		"fileStorage_connectionString": {
 			"value": ""
 		},
 		"globalRetailerDB_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sagaweb.database.windows.net;Initial Catalog=globalRetailerDB"
-		},
-		"MockarooStore_password": {
-			"value": ""
 		},
 		"MockarooCustomer_properties_typeProperties_url": {
 			"value": "https://api.mockaroo.com/api/3fe85af0?count=1000&key=c02c14f0"

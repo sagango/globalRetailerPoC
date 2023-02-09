@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MockarooCustomer'"
 		},
+		"MockarooStore_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MockarooStore'"
+		},
 		"fileStorage_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'fileStorage'"
@@ -19,10 +23,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'globalRetailerDB'",
 			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sagaweb.database.windows.net;Initial Catalog=globalRetailerDB"
-		},
-		"MockarooStore_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'MockarooStore'"
 		},
 		"MockarooCustomer_properties_typeProperties_url": {
 			"type": "string",
@@ -70,11 +70,11 @@
 					"MockarooCustomer_password": {
 						"value": "[parameters('MockarooCustomer_password')]"
 					},
-					"fileStorage_connectionString": {
-						"value": "[parameters('fileStorage_connectionString')]"
-					},
 					"MockarooStore_password": {
 						"value": "[parameters('MockarooStore_password')]"
+					},
+					"fileStorage_connectionString": {
+						"value": "[parameters('fileStorage_connectionString')]"
 					},
 					"globalRetailerDB_connectionString": {
 						"value": "[parameters('globalRetailerDB_connectionString')]"

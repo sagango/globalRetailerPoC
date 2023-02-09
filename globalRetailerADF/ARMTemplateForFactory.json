@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MockarooCustomer'"
 		},
+		"MockarooStore_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MockarooStore'"
+		},
 		"fileStorage_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'fileStorage'"
@@ -19,10 +23,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'globalRetailerDB'",
 			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sagaweb.database.windows.net;Initial Catalog=globalRetailerDB"
-		},
-		"MockarooStore_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'MockarooStore'"
 		},
 		"MockarooCustomer_properties_typeProperties_url": {
 			"type": "string",
@@ -533,7 +533,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "RestResource1",
+								"referenceName": "MockStore",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -556,7 +556,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/MockCustomer')]",
 				"[concat(variables('factoryId'), '/datasets/dbCustomers')]",
-				"[concat(variables('factoryId'), '/datasets/RestResource1')]",
+				"[concat(variables('factoryId'), '/datasets/MockStore')]",
 				"[concat(variables('factoryId'), '/datasets/dbStores')]"
 			]
 		},
@@ -576,6 +576,24 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/MockarooCustomer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MockStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MockarooStore",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MockarooStore')]"
 			]
 		},
 		{
@@ -875,6 +893,27 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/MockarooStore')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Generate fictional stores via API using AI, restricted to some countries",
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('MockarooStore_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('MockarooStore_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MockarooStore_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/fileStorage')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -904,6 +943,44 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/globalRetailerIR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dailyTrigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "dailyPopulate",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2023-02-08T23:30:00",
+						"timeZone": "Argentina Standard Time",
+						"schedule": {
+							"minutes": [
+								0
+							],
+							"hours": [
+								10
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/dailyPopulate')]"
 			]
 		},
 		{
@@ -947,83 +1024,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dailyTrigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "dailyPopulate",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2023-02-08T23:30:00",
-						"timeZone": "Argentina Standard Time",
-						"schedule": {
-							"minutes": [
-								0
-							],
-							"hours": [
-								10
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/dailyPopulate')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MockarooStore')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Generate fictional stores via API using AI, restricted to some countries",
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('MockarooStore_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Basic",
-					"userName": "[parameters('MockarooStore_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('MockarooStore_password')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/RestResource1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "MockarooStore",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "RestResource",
-				"typeProperties": {},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MockarooStore')]"
-			]
 		}
 	]
 }
