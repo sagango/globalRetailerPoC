@@ -3,24 +3,10 @@
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "API to obtain product description from Amazon",
-		"parameters": {
-			"asins": {
-				"type": "string",
-				"defaultValue": "B07FXYLSMB"
-			},
-			"region": {
-				"type": "string",
-				"defaultValue": "US"
-			},
-			"page": {
-				"type": "string",
-				"defaultValue": "1"
-			}
-		},
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/",
+			"url": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/?asins=B07FXYLSMB&region=US&page=1",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous",
 			"authHeaders": {
