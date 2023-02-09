@@ -839,6 +839,44 @@
 				"[concat(variables('factoryId'), '/datasets/MockCustomer')]",
 				"[concat(variables('factoryId'), '/datasets/dbCustomers')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dailyTrigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "dailyPopulate",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2023-02-08T23:30:00",
+						"timeZone": "Argentina Standard Time",
+						"schedule": {
+							"minutes": [
+								0
+							],
+							"hours": [
+								10
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/dailyPopulate')]"
+			]
 		}
 	]
 }
