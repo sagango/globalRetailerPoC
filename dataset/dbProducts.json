@@ -7,7 +7,46 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "category",
+				"type": "varchar"
+			},
+			{
+				"name": "product",
+				"type": "varchar"
+			},
+			{
+				"name": "attribute",
+				"type": "varchar"
+			},
+			{
+				"name": "measure",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "UoM",
+				"type": "varchar"
+			},
+			{
+				"name": "price",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "createdOn",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "products"
