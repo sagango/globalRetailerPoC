@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'fileStorage'"
 		},
+		"MockarooStore_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MockarooStore'"
+		},
 		"globalRetailerDB_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'globalRetailerDB'",
@@ -25,6 +29,14 @@
 			"defaultValue": "https://api.mockaroo.com/api/3fe85af0?count=1000&key=c02c14f0"
 		},
 		"MockarooCustomer_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "jose@sagaweb.org"
+		},
+		"MockarooStore_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.mockaroo.com/api/8cd8f640?count=5&key=c02c14f0"
+		},
+		"MockarooStore_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "jose@sagaweb.org"
 		}
@@ -105,6 +117,27 @@
 				"type": "ManagedIdentity",
 				"typeProperties": {
 					"resourceId": "/subscriptions/5122a010-5fe7-4232-a800-dd6abd50f1f7/resourcegroups/globalRetailerPoC/providers/Microsoft.ManagedIdentity/userAssignedIdentities/writerConnector"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MockarooStore')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Generate fictional stores via API using AI, restricted to some countries",
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('MockarooStore_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('MockarooStore_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MockarooStore_password')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -338,6 +371,24 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/RestResource1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MockarooStore",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MockarooStore')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dbCustomers')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -414,7 +465,7 @@
 				"schema": [],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "stores"
+					"table": "store"
 				}
 			},
 			"dependsOn": [
@@ -827,6 +878,100 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Populate Store",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['country']"
+										},
+										"sink": {
+											"name": "country",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['city']"
+										},
+										"sink": {
+											"name": "city",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['postal']"
+										},
+										"sink": {
+											"name": "postal",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['lat']"
+										},
+										"sink": {
+											"name": "lat",
+											"type": "Double"
+										}
+									},
+									{
+										"source": {
+											"path": "$['long']"
+										},
+										"sink": {
+											"name": "long",
+											"type": "Double"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "RestResource1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "dbStores",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"policy": {
@@ -837,7 +982,9 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/MockCustomer')]",
-				"[concat(variables('factoryId'), '/datasets/dbCustomers')]"
+				"[concat(variables('factoryId'), '/datasets/dbCustomers')]",
+				"[concat(variables('factoryId'), '/datasets/RestResource1')]",
+				"[concat(variables('factoryId'), '/datasets/dbStores')]"
 			]
 		},
 		{

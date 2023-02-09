@@ -14,10 +14,19 @@
 		"globalRetailerDB_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sagaweb.database.windows.net;Initial Catalog=globalRetailerDB"
 		},
+		"MockarooStore_password": {
+			"value": ""
+		},
 		"MockarooCustomer_properties_typeProperties_url": {
 			"value": "https://api.mockaroo.com/api/3fe85af0?count=1000&key=c02c14f0"
 		},
 		"MockarooCustomer_properties_typeProperties_userName": {
+			"value": "jose@sagaweb.org"
+		},
+		"MockarooStore_properties_typeProperties_url": {
+			"value": "https://api.mockaroo.com/api/8cd8f640?count=5&key=c02c14f0"
+		},
+		"MockarooStore_properties_typeProperties_userName": {
 			"value": "jose@sagaweb.org"
 		}
 	}
