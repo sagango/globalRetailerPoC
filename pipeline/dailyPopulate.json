@@ -249,7 +249,7 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
-						"preCopyScript": "SELECT REPLACE(price, '$','')",
+						"preCopyScript": "SELECT REPLACE(Price, '$','')",
 						"writeBehavior": "upsert",
 						"upsertSettings": {
 							"useTempDB": true,
