@@ -1,0 +1,17 @@
+{
+	"name": "ProductsAPI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ParazunAPI",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		},
+		"schema": {}
+	}
+}
