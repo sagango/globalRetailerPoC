@@ -21,6 +21,12 @@
 		},
 		"annotations": [],
 		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@concat('?',dataset().asins)",
+				"type": "Expression"
+			}
+		},
 		"schema": []
 	}
 }
