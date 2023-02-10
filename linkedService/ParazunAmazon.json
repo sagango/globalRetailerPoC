@@ -20,7 +20,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/",
+			"url": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/?",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous",
 			"authHeaders": {
