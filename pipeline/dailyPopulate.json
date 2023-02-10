@@ -224,7 +224,7 @@
 				]
 			},
 			{
-				"name": "Update Products",
+				"name": "Update Products_Amazon",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -237,28 +237,29 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+						"type": "RestSource",
+						"additionalColumns": [
+							{
+								"name": "provider",
+								"value": "Amazon US"
+							}
+						],
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
 						}
 					},
 					"sink": {
 						"type": "AzureSqlSink",
-						"preCopyScript": {
-							"value": "@{replace($price,'$','')}",
-							"type": "Expression"
-						},
 						"writeBehavior": "upsert",
 						"upsertSettings": {
 							"useTempDB": true,
 							"keys": [
-								"id",
+								"asin",
 								"product",
+								"totalRatings",
 								"price"
 							]
 						},
@@ -271,90 +272,88 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "Category",
-									"type": "String",
-									"physicalType": "String"
+									"path": "$['results'][0]['image']"
 								},
 								"sink": {
-									"name": "category",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "imageURL",
+									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "Product",
-									"type": "String",
-									"physicalType": "String"
+									"path": "$['results'][0]['asin']"
+								},
+								"sink": {
+									"name": "asin",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['title']"
 								},
 								"sink": {
 									"name": "product",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "Attribute",
-									"type": "String",
-									"physicalType": "String"
+									"path": "$['results'][0]['currency']"
 								},
 								"sink": {
-									"name": "attribute",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "currency",
+									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "Weight",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "measure",
-									"type": "Double",
-									"physicalType": "float"
-								}
-							},
-							{
-								"source": {
-									"name": "UoM",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "UoM",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": " Price ",
-									"type": "String",
-									"physicalType": "String"
+									"path": "$['results'][0]['price']"
 								},
 								"sink": {
 									"name": "price",
-									"type": "Decimal",
-									"physicalType": "money",
-									"scale": 4,
-									"precision": 19
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['avg_rating']"
+								},
+								"sink": {
+									"name": "avgRating",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['num_ratings']"
+								},
+								"sink": {
+									"name": "totalRatings",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['provider']"
+								},
+								"sink": {
+									"name": "provider",
+									"type": "String"
 								}
 							}
-						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
+						]
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "csvProducts",
-						"type": "DatasetReference"
+						"referenceName": "productAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"asins": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W",
+							"region": "US",
+							"page": "1"
+						}
 					}
 				],
 				"outputs": [
