@@ -238,6 +238,12 @@
 				"typeProperties": {
 					"source": {
 						"type": "RestSource",
+						"additionalColumns": [
+							{
+								"name": "provider",
+								"value": "Amazon US"
+							}
+						],
 						"httpRequestTimeout": "00:01:40",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "GET",
@@ -266,7 +272,7 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['results'][0]['image']"
+									"path": "['image']"
 								},
 								"sink": {
 									"name": "imageURL",
@@ -275,7 +281,7 @@
 							},
 							{
 								"source": {
-									"path": "$['results'][0]['asin']"
+									"path": "['asin']"
 								},
 								"sink": {
 									"name": "asin",
@@ -284,7 +290,7 @@
 							},
 							{
 								"source": {
-									"path": "$['results'][0]['title']"
+									"path": "['title']"
 								},
 								"sink": {
 									"name": "product",
@@ -293,7 +299,7 @@
 							},
 							{
 								"source": {
-									"path": "$['results'][0]['currency']"
+									"path": "['currency']"
 								},
 								"sink": {
 									"name": "currency",
@@ -302,7 +308,7 @@
 							},
 							{
 								"source": {
-									"path": "$['results'][0]['price']"
+									"path": "['price']"
 								},
 								"sink": {
 									"name": "price",
@@ -311,7 +317,7 @@
 							},
 							{
 								"source": {
-									"path": "$['results'][0]['avg_rating']"
+									"path": "['avg_rating']"
 								},
 								"sink": {
 									"name": "avgRating",
@@ -320,11 +326,16 @@
 							},
 							{
 								"source": {
-									"path": "$['results'][0]['num_ratings']"
+									"path": "['num_ratings']"
 								},
 								"sink": {
 									"name": "totalRatings",
 									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "['prime']"
 								}
 							},
 							{
@@ -336,7 +347,8 @@
 									"type": "String"
 								}
 							}
-						]
+						],
+						"collectionReference": "$['results']"
 					}
 				},
 				"inputs": [
