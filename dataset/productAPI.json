@@ -1,0 +1,17 @@
+{
+	"name": "productAPI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ParazunAmazon",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"asins": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W",
+				"region": "US",
+				"page": 1
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
