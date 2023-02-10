@@ -39,6 +39,18 @@
 		"MockarooStore_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "jose@sagaweb.org"
+		},
+		"ParazunAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/?asins=B07FXYLSMB&region=US&page=1"
+		},
+		"ParazunAmazon_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/"
+		},
+		"globalRetailerAKV_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://globalRetailerKV.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -545,6 +557,154 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Update Products_Amazon",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"additionalColumns": [
+									{
+										"name": "provider",
+										"value": "Amazon US"
+									}
+								],
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "upsert",
+								"upsertSettings": {
+									"useTempDB": true,
+									"keys": [
+										"asin",
+										"product",
+										"totalRatings",
+										"price"
+									]
+								},
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['image']"
+										},
+										"sink": {
+											"name": "imageURL",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['asin']"
+										},
+										"sink": {
+											"name": "asin",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['title']"
+										},
+										"sink": {
+											"name": "product",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['currency']"
+										},
+										"sink": {
+											"name": "currency",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['price']"
+										},
+										"sink": {
+											"name": "price",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "[['avg_rating']"
+										},
+										"sink": {
+											"name": "avgRating",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "[['num_ratings']"
+										},
+										"sink": {
+											"name": "totalRatings",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "[['prime']"
+										},
+										"sink": {}
+									},
+									{
+										"source": {
+											"path": "$['provider']"
+										},
+										"sink": {
+											"name": "provider",
+											"type": "String"
+										}
+									}
+								],
+								"collectionReference": "$['results']"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "productAPI",
+								"type": "DatasetReference",
+								"parameters": {
+									"asins": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W",
+									"region": "US",
+									"page": "1"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "dbProducts",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"policy": {
@@ -557,7 +717,9 @@
 				"[concat(variables('factoryId'), '/datasets/MockCustomer')]",
 				"[concat(variables('factoryId'), '/datasets/dbCustomers')]",
 				"[concat(variables('factoryId'), '/datasets/MockStore')]",
-				"[concat(variables('factoryId'), '/datasets/dbStores')]"
+				"[concat(variables('factoryId'), '/datasets/dbStores')]",
+				"[concat(variables('factoryId'), '/datasets/productAPI')]",
+				"[concat(variables('factoryId'), '/datasets/dbProducts')]"
 			]
 		},
 		{
@@ -594,6 +756,28 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/MockarooStore')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ProductsAPI')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ParazunAPI",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ParazunAPI')]"
 			]
 		},
 		{
@@ -840,10 +1024,58 @@
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
-				"schema": [],
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "product",
+						"type": "varchar"
+					},
+					{
+						"name": "currency",
+						"type": "varchar"
+					},
+					{
+						"name": "price",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "totalRatings",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "avgRating",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "asin",
+						"type": "varchar"
+					},
+					{
+						"name": "imageURL",
+						"type": "varchar"
+					},
+					{
+						"name": "provider",
+						"type": "varchar"
+					},
+					{
+						"name": "createdOn",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "products"
+					"table": "product"
 				}
 			},
 			"dependsOn": [
@@ -869,6 +1101,43 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/globalRetailerDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/productAPI')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ParazunAmazon",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"asins": {
+						"type": "string",
+						"defaultValue": "B07FXYLSMB"
+					},
+					"region": {
+						"type": "string",
+						"defaultValue": "US"
+					},
+					"page": {
+						"type": "string",
+						"defaultValue": "1"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "@concat('?asins=',dataset().asins)",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ParazunAmazon')]"
 			]
 		},
 		{
@@ -914,6 +1183,58 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ParazunAPI')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "API to obtain product description from Amazon",
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('ParazunAPI_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous",
+					"authHeaders": {
+						"X-RapidAPI-Key": {
+							"type": "SecureString",
+							"value": "**********"
+						},
+						"X-RapidAPI-Host": {
+							"type": "SecureString",
+							"value": "**********"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ParazunAmazon')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "API to obtain summary of any amazon product",
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('ParazunAmazon_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous",
+					"authHeaders": {
+						"X-RapidAPI-Host": {
+							"type": "SecureString",
+							"value": "**********"
+						},
+						"X-RapidAPI-Key": {
+							"type": "SecureString",
+							"value": "**********"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/fileStorage')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -922,6 +1243,19 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('fileStorage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/globalRetailerAKV')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('globalRetailerAKV_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []

@@ -28,6 +28,15 @@
 		},
 		"MockarooStore_properties_typeProperties_userName": {
 			"value": "jose@sagaweb.org"
+		},
+		"ParazunAPI_properties_typeProperties_url": {
+			"value": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/?asins=B07FXYLSMB&region=US&page=1"
+		},
+		"ParazunAmazon_properties_typeProperties_url": {
+			"value": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/"
+		},
+		"globalRetailerAKV_properties_typeProperties_baseUrl": {
+			"value": "https://globalRetailerKV.vault.azure.net/"
 		}
 	}
 }

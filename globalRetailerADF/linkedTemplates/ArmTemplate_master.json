@@ -40,6 +40,18 @@
 			"type": "string",
 			"defaultValue": "jose@sagaweb.org"
 		},
+		"ParazunAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/?asins=B07FXYLSMB&region=US&page=1"
+		},
+		"ParazunAmazon_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://parazun-amazon-data.p.rapidapi.com/product/summaries/"
+		},
+		"globalRetailerAKV_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://globalRetailerKV.vault.azure.net/"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -90,10 +102,39 @@
 					},
 					"MockarooStore_properties_typeProperties_userName": {
 						"value": "[parameters('MockarooStore_properties_typeProperties_userName')]"
+					},
+					"ParazunAPI_properties_typeProperties_url": {
+						"value": "[parameters('ParazunAPI_properties_typeProperties_url')]"
+					},
+					"ParazunAmazon_properties_typeProperties_url": {
+						"value": "[parameters('ParazunAmazon_properties_typeProperties_url')]"
+					},
+					"globalRetailerAKV_properties_typeProperties_baseUrl": {
+						"value": "[parameters('globalRetailerAKV_properties_typeProperties_baseUrl')]"
 					}
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "globalRetailerADF_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'globalRetailerADF_ArmTemplate_0')]"
+			]
 		}
 	]
 }
