@@ -3,20 +3,6 @@
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "API to obtain summary of any amazon product",
-		"parameters": {
-			"asins": {
-				"type": "string",
-				"defaultValue": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W"
-			},
-			"region": {
-				"type": "string",
-				"defaultValue": "US"
-			},
-			"page": {
-				"type": "int",
-				"defaultValue": 1
-			}
-		},
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
