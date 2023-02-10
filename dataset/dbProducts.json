@@ -14,24 +14,11 @@
 				"precision": 10
 			},
 			{
-				"name": "category",
-				"type": "varchar"
-			},
-			{
 				"name": "product",
 				"type": "varchar"
 			},
 			{
-				"name": "attribute",
-				"type": "varchar"
-			},
-			{
-				"name": "measure",
-				"type": "float",
-				"precision": 15
-			},
-			{
-				"name": "UoM",
+				"name": "currency",
 				"type": "varchar"
 			},
 			{
@@ -39,6 +26,28 @@
 				"type": "money",
 				"precision": 19,
 				"scale": 4
+			},
+			{
+				"name": "totalRatings",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "avgRating",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "asin",
+				"type": "varchar"
+			},
+			{
+				"name": "imageURL",
+				"type": "varchar"
+			},
+			{
+				"name": "provider",
+				"type": "varchar"
 			},
 			{
 				"name": "createdOn",
@@ -49,7 +58,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "products"
+			"table": "product"
 		}
 	}
 }
