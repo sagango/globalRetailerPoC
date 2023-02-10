@@ -705,12 +705,6 @@
 									},
 									{
 										"source": {
-											"path": "[['prime']"
-										},
-										"sink": {}
-									},
-									{
-										"source": {
 											"path": "$['provider']"
 										},
 										"sink": {
