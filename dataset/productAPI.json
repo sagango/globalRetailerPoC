@@ -23,7 +23,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@concat('?asins=',dataset().asins,'%region=',dataset().region,'%page=',dataset().page)",
+				"value": "@concat('?asins=',dataset().asins)",
 				"type": "Expression"
 			}
 		},
