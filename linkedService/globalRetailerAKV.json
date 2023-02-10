@@ -1,0 +1,10 @@
+{
+	"name": "globalRetailerAKV",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://globalRetailerKV.vault.azure.net/"
+		}
+	}
+}
