@@ -197,7 +197,14 @@
 					{
 						"name": "Populate Store",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Populate Customer",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -291,7 +298,14 @@
 					{
 						"name": "Update Products_Amazon",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Populate Store",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -416,7 +430,7 @@
 								"referenceName": "productAPI",
 								"type": "DatasetReference",
 								"parameters": {
-									"asins": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W",
+									"asins": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W%B07R59RP9W%B000NSGUJ4%B00E3J9QSG%B00CIZ7I14%B008N8K15K%B08RXL8YF6",
 									"region": "US",
 									"page": "1"
 								}
@@ -429,6 +443,39 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Generate 10000 sales",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Update Products_Amazon",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "DECLARE @Counter INT\nSET @Counter=0\n\nWHILE (@Counter <=10000)\nBEGIN\nWITH cte1 AS (\n   SELECT TOP 1 id\n   FROM dbo.customer\n   ORDER BY NEWID()\n), cte2 AS (\n   SELECT TOP 1 id\n   FROM dbo.product\n   ORDER BY NEWID()\n), cte3 AS (\n   SELECT TOP 1 id\n   FROM dbo.store\n   ORDER BY NEWID()\n)\nINSERT INTO dbo.sales (customerid, productid, storeid)\nVALUES ((SELECT id FROM cte1),(SELECT id FROM cte2),(SELECT id FROM cte3))\nSET @Counter = @Counter +1\nEND",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "dbSales",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
 					}
 				],
 				"policy": {
@@ -443,7 +490,8 @@
 				"[concat(variables('factoryId'), '/datasets/MockStore')]",
 				"[concat(variables('factoryId'), '/datasets/dbStores')]",
 				"[concat(variables('factoryId'), '/datasets/productAPI')]",
-				"[concat(variables('factoryId'), '/datasets/dbProducts')]"
+				"[concat(variables('factoryId'), '/datasets/dbProducts')]",
+				"[concat(variables('factoryId'), '/datasets/dbSales')]"
 			]
 		},
 		{
@@ -903,6 +951,24 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dbSales')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "globalRetailerDB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/globalRetailerDB')]"
+			]
 		}
 	]
 }
