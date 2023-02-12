@@ -379,8 +379,8 @@
 				]
 			},
 			{
-				"name": "Generate 10000 sales",
-				"type": "Lookup",
+				"name": "Generate sales",
+				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
 						"activity": "Update Products_Amazon",
@@ -398,16 +398,11 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": "DECLARE @Counter INT\nSET @Counter=0\n\nWHILE (@Counter <=10000)\nBEGIN\nWITH cte1 AS (\n   SELECT TOP 1 id\n   FROM dbo.customer\n   ORDER BY NEWID()\n), cte2 AS (\n   SELECT TOP 1 id\n   FROM dbo.product\n   ORDER BY NEWID()\n), cte3 AS (\n   SELECT TOP 1 id\n   FROM dbo.store\n   ORDER BY NEWID()\n)\nINSERT INTO dbo.sales (customerid, productid, storeid)\nVALUES ((SELECT id FROM cte1),(SELECT id FROM cte2),(SELECT id FROM cte3))\nSET @Counter = @Counter +1\nEND",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "dbSales",
-						"type": "DatasetReference"
-					}
+					"storedProcedureName": "[dbo].[saleGenerator]"
+				},
+				"linkedServiceName": {
+					"referenceName": "globalRetailerDB",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
