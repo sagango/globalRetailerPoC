@@ -8,7 +8,7 @@
 		"parameters": {
 			"asins": {
 				"type": "string",
-				"defaultValue": "B07FXYLSMB"
+				"defaultValue": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W"
 			},
 			"region": {
 				"type": "string",
