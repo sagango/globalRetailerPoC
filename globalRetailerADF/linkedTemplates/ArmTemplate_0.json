@@ -301,7 +301,7 @@
 				"parameters": {
 					"asins": {
 						"type": "string",
-						"defaultValue": "B07FXYLSMB"
+						"defaultValue": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W"
 					},
 					"region": {
 						"type": "string",
@@ -316,7 +316,7 @@
 				"type": "RestResource",
 				"typeProperties": {
 					"relativeUrl": {
-						"value": "@concat('?asins=',dataset().asins)",
+						"value": "@concat('?asins=',dataset().asins,'&region=',dataset().region,'&page=',dataset().page)",
 						"type": "Expression"
 					}
 				},
@@ -868,7 +868,7 @@
 								"referenceName": "productAPI",
 								"type": "DatasetReference",
 								"parameters": {
-									"asins": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W%B07R59RP9W%B000NSGUJ4%B00E3J9QSG%B00CIZ7I14%B008N8K15K%B08RXL8YF6",
+									"asins": "B07FXYLSMB%2CB000PKMAOY%2CB08DS45Y8W%2CB07R59RP9W%2CB000NSGUJ4%2CB00E3J9QSG%2CB00CIZ7I14%2CB008N8K15K%2CB08RXL8YF6",
 									"region": "US",
 									"page": "1"
 								}
